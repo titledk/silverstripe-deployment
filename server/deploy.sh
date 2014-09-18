@@ -47,7 +47,7 @@ echo ''
 
 #exit;
 
-SCRIPTNAME="$MODULEDIR/deployment/server/deploy.sh"
+SCRIPTNAME="$MODULEDIR/server/deploy.sh"
 
 
 cd ${!repodir}

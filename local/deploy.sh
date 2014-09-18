@@ -27,7 +27,7 @@ eval `$VARS`
 #Example:
 #See also http://serverfault.com/questions/167416/change-directory-automatically-on-ssh-login
 
-SCRIPT="$ENV_REPODIR/server/deploy.sh"
+SCRIPT="$ENV_REPODIR/deployment/server/deploy.sh"
 
 #echo $SCRIPT $ENV
 
@@ -36,12 +36,16 @@ SCRIPT="$ENV_REPODIR/server/deploy.sh"
 
 # this is doing the following:
 # 1. ssh into the server
-# 2. Updating sub modules (e.g. in order to make sure the deploy lib is available)
+# 2. Updating git repoUpdating sub modules (e.g. in order to make sure the deploy lib is available)
 # 3. making the deploy script executeable
 # 4. running the deploy script - WITH the specific config
 # 5. running additional commands - if needed
 
-GITCOMMANDS="cd $ENV_REPODIR; git submodule init; git submodule sync; git update;" 
+GITCOMMANDS="cd $ENV_REPODIR; git pull; git submodule init; git submodule sync; git submodule update; echo 'Now initiating deploy script on server...';" 
+
+echo "Starting deployment to $ENV_HOST ($ENV)...";
+echo "--------------------------------------------------------";
+echo "Updating git repo, and syncing sub modules:";
 
 ssh $ENV_CUSTOM_SSHCONNECTIONSTR -t "$GITCOMMANDS chmod u+x $SCRIPT;$SCRIPT $ENV; $2"
 

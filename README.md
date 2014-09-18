@@ -35,7 +35,7 @@ _This is only needed for setting it up, not for using it_
 
 Run the following command. This module will be added to your project as a sub module.
 
-	git submodule add git@github.com:titledk/silverstripe-deployment.git deployment;./deployment/_install/local-install.sh;
+	git submodule add git://github.com/titledk/silverstripe-deployment.git deployment;./deployment/_install/local-install.sh;
 
 
 ## Known issues
