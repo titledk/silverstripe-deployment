@@ -19,3 +19,15 @@ function parse_yaml {
       }
    }'
 }
+
+
+function env_check {
+	if [ -z "${1}" ]; then
+		echo "ENV is unset. Please add ENV to the url."
+		exit;
+	fi
+}
+
+
+#TODO: add the following functions
+#* current branch

@@ -45,7 +45,7 @@ read REPODIR
 
 #creation of config, based on input
 
-echo "Servers:
+echo "Environments:
   Live:
     #required
     Host: \"$HOST\"
@@ -54,7 +54,7 @@ echo "Servers:
 
     #additional settings
     Sshport: \"\"
-    Composerdir: \"\"
+    Composerdir: \"\" #not yet implemented
 
   Test:
     #here goes data for a test server

@@ -1,16 +1,20 @@
 #! /bin/bash
-#title.dk's deploy script, September 2013
+#title.dk's deploy script
 
-#This needs the server provided in the url ($1)
+#This needs the environment provided in the url ($1)
 #E.g. Live, Test, Dev...
+
+#Run like this:
+#./deploy.sh Live
+
 
 
 MODULEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )";
 
 
-SERVER=$1
-echo $SERVER;
-#TODO: die if no server/environment has been provided
+ENV=$1
+echo $ENV;
+#TODO: die if no environment has been provided
 
 
 VARS="$MODULEDIR/lib/shell/vars.sh"
@@ -22,7 +26,7 @@ $VARS;
 eval `$VARS`
 
 
-PRE="Servers_$SERVER"
+PRE="Environments_$ENV"
 
 host=$PRE"_Host"
 sshuser=$PRE"_Sshuser"
@@ -35,7 +39,7 @@ echo ${!repodir}
 
 
 echo '--------------------------------------------------------'
-echo "Now deploying $SERVER(${!host})"
+echo "Now deploying $ENVIRONMENT(${!host})"
 echo ''
 echo 'Directory:'
 echo ${!repodir}
