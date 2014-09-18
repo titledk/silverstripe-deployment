@@ -1,7 +1,7 @@
 #!/bin/sh
 
 MODULEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )";
-echo $MODULEDIR;
+#echo $MODULEDIR;
 
 source $MODULEDIR/lib/shell/inc.sh;
 
@@ -31,26 +31,6 @@ echo 'test';
 
 }
 
-
-
-
-
-# Start output
-
-
-
-
-##The script can be called with a few shortcuts
-#case "$1" in
-#
-#help)  echo "Help"
-#	available_environments;
-#	;;
-#	
-#*) echo "Please choose environment:"
-#	available_environments;
-#	;;
-#esac
 
 
 
@@ -108,49 +88,88 @@ function option_picked() {
 	echo "${COLOR}${MESSAGE}${RESET}"
 }
 
-clear
-show_menu
-while [ opt != '' ]
-	do
-	if [[ $opt = "" ]]; then 
-			exit;
-	else
-		case $opt in
-		#1) clear;
-		#option_picked "Option 1 Picked";
-		##sudo mount /dev/sdh1 /mnt/DropBox/; #The 3 terabyte
-		#echo test tst
-		#show_menu;
-		#;;
 
-		x)exit;
-		;;
 
-		\n)exit;
-		;;
 
-		*)clear;
 
-		#Environments
-		i=1
-		for element in "${ENV_ARRAY[@]}"
+
+
+
+
+
+if [ -n "$1" ]
+then
+
+	#we expect the script to be called with the environment
+    echo 'we do some execution:'
+    $MODULEDIR/local/deploy.sh $1
+else
+    	
+	clear
+	show_menu
+	while [ opt != '' ]
 		do
-
-			if (( $i == $opt ))
-			then
-				CMD="$SCRIPT_COMMAND $element";
-				echo "executing $CMD...";
-				$CMD;
-			fi
+		if [[ $opt = "" ]]; then 
+				exit;
+		else
+			case $opt in
+			#1) clear;
+			#option_picked "Option 1 Picked";
+			##sudo mount /dev/sdh1 /mnt/DropBox/; #The 3 terabyte
+			#echo test tst
+			#show_menu;
+			#;;
+	
+			x)exit;
+			;;
+	
+			\n)exit;
+			;;
+	
+			*)clear;
+	
+			#Environments
+			i=1
+			for element in "${ENV_ARRAY[@]}"
+			do
+	
+				if (( $i == $opt ))
+				then
+					CMD="$SCRIPT_COMMAND $element";
+					echo "executing $CMD...";
+					$CMD;
+				fi
+				
+				let i++;
+			done
+	
 			
-			let i++;
-		done
-
-		
-		option_picked "Pick an option from the menu";
-		show_menu;
-		;;
-	esac
+			option_picked "Pick an option from the menu";
+			show_menu;
+			;;
+		esac
+	fi
+	done
 fi
-done
+
+
+
+###The script can be called with a few shortcuts
+#case "$1" in
+#
+#help)  echo "Help"
+#	
+#	;;
+#
+#Live) echo 'testing'
+#
+#
+#	;;
+#	
+#*) echo "Please choose environment:"
+#	
+#	
+#	;;
+#esac
+#
 
