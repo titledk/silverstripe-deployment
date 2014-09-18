@@ -40,7 +40,7 @@ SCRIPT="$ENV_REPODIR/deployment/server/deploy.sh"
 # 4. running the deploy script - WITH the specific config
 # 5. running additional commands - if needed
 
-GITCOMMANDS="cd $ENV_REPODIR; git pull; git submodule init; git submodule sync; git submodule update; echo 'Now initiating deploy script on server...';" 
+GITCOMMANDS="cd $ENV_REPODIR; git pull; git submodule init; git submodule sync; git submodule update; echo ''; echo 'Now initiating deploy script on server...';" 
 
 echo "Starting deployment to $ENV_HOST ($ENV)...";
 echo "--------------------------------------------------------";

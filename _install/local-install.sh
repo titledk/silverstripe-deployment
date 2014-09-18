@@ -67,7 +67,7 @@ echo "Environments:
 #creating the "deploy" script, and setting permissions
 
 echo "#!/bin/sh
-php ./deployment/lib/deploy.php" > deploy;
+./deployment/local/menu.sh \"$@\"" > deploy;
 chmod u+x deploy;
 
 echo "";
