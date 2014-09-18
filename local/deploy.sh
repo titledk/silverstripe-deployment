@@ -1,32 +1,25 @@
 #! /bin/bash
-# This is the localhost part of the main deploy lib
+#This is the localhost part of the main deploy lib
+#It needs the environment provided in the url ($1)
+#E.g. Live, Test, Dev...
+
+#Run like this:
+#./ssh.sh Live
 
 
+MODULEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )";
+
+ENV=$1
 
 
-
-#configuration file needs to be added with the url
-CONFIG=$1;
-#We can also add whatever we want to be executed on the server after deployment in $2
+#Getting environment specific vars
+VARS="$MODULEDIR/lib/shell/vars-for-env.sh $ENV"
 
 
-SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd)";
+#evaluate variables:
+eval `$VARS`
 
 
-VARS="$SCRIPTDIR/lib/vars.sh"
-VARSSTR="$VARS $CONFIG"
-#echo $VARSSTR
-
-
-chmod u+x $VARS
-eval `$VARSSTR`
-
-
-CUSTOM_VARS="$SCRIPTDIR/lib/vars-custom.sh"
-CUSTOM_VARSSTR="$CUSTOM_VARS $CONFIG"
-
-chmod u+x $CUSTOM_VARS
-eval `$CUSTOM_VARSSTR`
 
 
 
@@ -34,17 +27,21 @@ eval `$CUSTOM_VARSSTR`
 #Example:
 #See also http://serverfault.com/questions/167416/change-directory-automatically-on-ssh-login
 
-SCRIPT="$REPODIR/scripts/server/deploy.sh"
+SCRIPT="$ENV_REPODIR/server/deploy.sh"
 
-echo $SCRIPT $CONFIG
+#echo $SCRIPT $ENV
+
+#exit;
 
 
 # this is doing the following:
 # 1. ssh into the server
-# 2. making the deploy script executeable
-# 3. running the deploy script - WITH the specific config
-# 4. running additional commands - if needed
+# 2. Updating sub modules (e.g. in order to make sure the deploy lib is available)
+# 3. making the deploy script executeable
+# 4. running the deploy script - WITH the specific config
+# 5. running additional commands - if needed
 
+GITCOMMANDS="cd $ENV_REPODIR; git submodule init; git submodule sync; git update;" 
 
-ssh $CUSTOM_SSHCONNECTIONSTR -t "chmod u+x $SCRIPT;$SCRIPT $CONFIG; $2"
+ssh $ENV_CUSTOM_SSHCONNECTIONSTR -t "$GITCOMMANDS chmod u+x $SCRIPT;$SCRIPT $ENV; $2"
 

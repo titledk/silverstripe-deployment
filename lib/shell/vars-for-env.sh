@@ -32,10 +32,10 @@ sshport=$PRE"_Sshport"
 
 #These are the variables that are exported:
 
-echo "HOST=${!host}"
-echo "SSHUSER=${!sshuser}"
-echo "REPODIR=${!repodir}"
-echo "SSHPORT=${!sshport}"
+echo "ENV_HOST=${!host}"
+echo "ENV_SSHUSER=${!sshuser}"
+echo "ENV_REPODIR=${!repodir}"
+echo "ENV_SSHPORT=${!sshport}"
 
 
 # Based on these, the folling variables are defined
@@ -47,10 +47,10 @@ if [ "${!host}" != "" ]; then
 	if [ "${!sshport}" != "" ]; then
 	  PORTSTR="-p ${!sshport}"
 	fi
-	echo "CUSTOM_SSHPORTSTR=\"$PORTSTR\"";
+	echo "ENV_CUSTOM_SSHPORTSTR=\"$PORTSTR\"";
 
 	CUSTOM_SSHCONNECTIONSTR="$PORTSTR ${!sshuser}@${!host}";
-	echo "CUSTOM_SSHCONNECTIONSTR=\"$CUSTOM_SSHCONNECTIONSTR\"";
+	echo "ENV_CUSTOM_SSHCONNECTIONSTR=\"$CUSTOM_SSHCONNECTIONSTR\"";
 
 
 fi

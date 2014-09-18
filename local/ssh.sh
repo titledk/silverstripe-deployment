@@ -13,14 +13,10 @@ MODULEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )";
 VARS="$MODULEDIR/lib/shell/vars-for-env.sh $1"
 
 
-
-#show variables:
-echo $VARS;
-
 #evaluate variables:
 eval `$VARS`
 
 
 #SSH in, and change dir
 #See also http://serverfault.com/questions/167416/change-directory-automatically-on-ssh-login
-ssh $CUSTOM_SSHCONNECTIONSTR -t "cd $REPODIR; bash --login"
+ssh $ENV_CUSTOM_SSHCONNECTIONSTR -t "cd $ENV_REPODIR; bash --login"
