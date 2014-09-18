@@ -15,7 +15,6 @@ ENV=$1
 #Getting environment specific vars
 VARS="$MODULEDIR/lib/shell/vars-for-env.sh $ENV"
 
-
 #evaluate variables:
 eval `$VARS`
 

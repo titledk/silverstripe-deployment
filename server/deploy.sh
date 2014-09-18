@@ -1,6 +1,5 @@
 #! /bin/bash
-#title.dk's deploy script
-
+#title.dk's deploy script (server part)
 #This needs the environment provided in the url ($1)
 #E.g. Live, Test, Dev...
 
@@ -8,41 +7,26 @@
 #./deploy.sh Live
 
 
-
 MODULEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )";
 
-
 ENV=$1
-echo $ENV;
-#TODO: die if no environment has been provided
 
 
-VARS="$MODULEDIR/lib/shell/vars.sh"
-
-#show variables:
-$VARS;
+#Getting environment specific vars
+VARS="$MODULEDIR/lib/shell/vars-for-env.sh $ENV"
 
 #evaluate variables:
 eval `$VARS`
 
 
-PRE="Environments_$ENV"
-
-host=$PRE"_Host"
-sshuser=$PRE"_Sshuser"
-repodir=$PRE"_Repodir"
-echo ${!host}
-echo ${!sshuser}
-echo ${!repodir}
-
 
 
 
 echo '--------------------------------------------------------'
-echo "Now deploying $ENVIRONMENT(${!host})"
+echo "Now running deploymet on $ENV($ENV_HOST)"
 echo ''
 echo 'Directory:'
-echo ${!repodir}
+echo $ENV_REPODIR
 echo ''
 
 #exit;
@@ -50,21 +34,16 @@ echo ''
 SCRIPTNAME="$MODULEDIR/server/deploy.sh"
 
 
-cd ${!repodir}
+cd $ENV_REPODIR
 #we need to make git ignore file mode changes, as this script needs to be executeable
 #in order to be executed
 git config core.filemode false
-git pull;
+
 #we do the same in the "deployment" repo (as this is where this file is called)
 cd deployment;
 git config core.filemode false
 cd ..
 
-
-echo "Updating Git Submodules";
-git submodule init;
-git submodule sync;
-git submodule update;
 
 
 #Composer
