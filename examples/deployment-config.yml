@@ -1,0 +1,15 @@
+Servers:
+  Live:
+    #required
+    Host: "xxxx.title.dk"
+    Sshuser: "xxxx"
+    Repodir: "/var/git-repos/MYSITE"
+
+    #additional settings
+    Sshport: ""
+    Composerdir: ""
+
+  Test:
+    #here goes data for a test server
+  Dev:
+    #here goes data for dev server - you can add as many servers as you want
