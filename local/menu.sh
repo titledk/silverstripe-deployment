@@ -61,8 +61,8 @@ show_mainmenu(){
 	
 	echo "for ${NORMAL}$Projectname${NORMAL}"
 	echo ''
-	echo "${ENTER_LINE}Please choose environment.${NORMAL}"
-	echo "${MENU}***********************************************${NORMAL}"
+	echo "${ENTER_LINE}Please choose environment and press ENTER.${NORMAL}"
+	#echo "${MENU}***********************************************${NORMAL}"
 	
 	
 
@@ -70,18 +70,18 @@ show_mainmenu(){
 
 	for element in "${ENV_ARRAY[@]}"
 	do
-		echo "${MENU}${NUMBER} $i)${MENU} $element ($SCRIPT_COMMAND menu $element)${NORMAL}"
+		#echo "${MENU}${NUMBER} $i)${MENU} $element (${NORMAL}$SCRIPT_COMMAND menu $element${MENU})${NORMAL}"
+		echo "${MENU}${NUMBER} $i)${MENU} $element${NORMAL}"
 		
 		let i++;
 	done
 
 
-	#echo "${MENU}${NUMBER} help)${MENU} Get help ${NORMAL}"
+	echo "${MENU}${NUMBER} x)${MENU} Exit ${NORMAL}"
 
-
-	echo "${MENU}***********************************************${NORMAL}"
-	echo "${ENTER_LINE}Please enter a menu option and enter or ${RED_TEXT}enter to exit. ${NORMAL}"
-	echo "${RED_TEXT}NOTE: ${ENTER_LINE}This should only be run from your local environment. ${NORMAL}"
+	echo ""
+	#echo "${MENU}***********************************************${NORMAL}"
+	echo "${RED_TEXT}NOTE: ${ENTER_LINE}This should be run from your LOCAL environment. ${NORMAL}"
 	read opt
 }
 
@@ -138,19 +138,27 @@ show_envmenu(){
 	
 	echo "for ${NORMAL}$Projectname ($1) ${NORMAL}"
 	echo ''
-	echo "${ENTER_LINE}Press ENTER to deploy, or enter an option and press ENTER, ." 
-	echo "${MENU}***********************************************${NORMAL}"
+	echo "${ENTER_LINE}Press ENTER to deploy directly, or enter an option and press ENTER." 
+	echo ""
+	#echo "${MENU}***********************************************${NORMAL}"
 	
 	
-	echo "${MENU}${NUMBER} ENTER)${MENU} Deploy${NORMAL}"
+	#echo "${MENU}${NUMBER} ENTER)${MENU} Deploy${NORMAL}"
 	echo "${MENU}${NUMBER} push)${MENU} Push & Deploy${NORMAL}"
 	echo "${MENU}${NUMBER} sudo)${MENU} Sudo Deploy (clears cache, rebuilds database, updates Composer...)${NORMAL}"
 	echo "${MENU}${NUMBER} sudo push)${MENU} Push & Sudo Deploy${NORMAL}"
+	
+	echo "";
+	
+	echo "${MENU}${NUMBER} shortcuts)${MENU} Back to Main menu${NORMAL}"
+	echo "${MENU}${NUMBER} back)${MENU} Back to Main menu${NORMAL}"
 
+	echo "";
 
-	echo "${MENU}***********************************************${NORMAL}"
+	#echo "${MENU}***********************************************${NORMAL}"
 	echo "${RED_TEXT}Press x and ENTER to exit. ${NORMAL}"
 	echo "${RED_TEXT}NOTE: ${ENTER_LINE}This should be run from your LOCAL environment. ${NORMAL}"
+	
 	read opt
 }
 
@@ -197,6 +205,25 @@ envmenu_input() {
 			
 			"sudo push")
 			CMD="$SCRIPT_COMMAND sudo push $1";
+			execute_note "$CMD";
+			$CMD;
+			exit;
+			;;
+			
+			
+			"shortcuts")
+			echo ""
+			echo 'Shortcuts:'
+			echo "${ENTER_LINE}Deploy to $1 environment: ${NORMAL}$SCRIPT_COMMAND $1"
+			echo "${ENTER_LINE}Sudo Push & deploy: ${NORMAL}$SCRIPT_COMMAND sudo push $1"
+			echo ""
+			echo "${ENTER_LINE}Call this menu directly: ${NORMAL}$SCRIPT_COMMAND menu $1"
+			$CMD;
+			exit;
+			;;
+			
+			"back")
+			CMD="$SCRIPT_COMMAND menu";
 			execute_note "$CMD";
 			$CMD;
 			exit;
