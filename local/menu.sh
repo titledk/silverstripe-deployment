@@ -24,6 +24,9 @@ eval `$VARS`
 IFS=', ' read -a ENV_ARRAY <<< "$AvailableEnvironments"
 
 
+
+
+
 #Script command
 SCRIPT_COMMAND="./d";
 
@@ -40,16 +43,24 @@ RED_TEXT=`echo "\033[31m"`
 ENTER_LINE=`echo "\033[33m"`
 
 
+logo() {
+
+	echo "Title Web Solution's${ENTER_LINE}"
+	echo ' ____          _                       _   '
+	echo '|    \ ___ ___| |___ _ _ _____ ___ ___| |_ '
+	echo '|  |  | -_| . | | . | | |     | -_|   |  _|'
+	echo '|____/|___|  _|_|___|_  |_|_|_|___|_|_|_|  '
+	echo '          |_|       |___|                  '
+
+}
+
 
 show_menu(){
-
-	echo "${ENTER_LINE} _   _ _   _          _ _     "
-	echo '| |_(_) |_| |___   __| | |__  '
-	echo '|  _| |  _| / -_)_/ _` | / /  '
-	echo " \__|_|\__|_\___(_)__,_|_\_\  "
+	
+	logo;
+	
+	echo "for ${NORMAL}$Projectname${NORMAL}"
 	echo ''
-	echo "Deployment scripts for ${NORMAL}$Projectname${NORMAL}"
-	echo ''    
 	echo "${ENTER_LINE}Please choose environment.${NORMAL}"
 	echo "${MENU}***********************************************${NORMAL}"
 	
@@ -65,7 +76,7 @@ show_menu(){
 	done
 
 
-	echo "${MENU}${NUMBER} help)${MENU} Get help ${NORMAL}"
+	#echo "${MENU}${NUMBER} help)${MENU} Get help ${NORMAL}"
 
 
 	echo "${MENU}***********************************************${NORMAL}"
@@ -74,144 +85,7 @@ show_menu(){
 	read opt
 }
 
-start_message() {
-	echo "${MENU}***********************************************${NORMAL}"
-	echo $1
-	#echo "Direct command: $SCRIPT_COMMAND $ALL_ARGS"
-	#echo "${MENU}***********************************************${NORMAL}"
-
-}
-
-
-
-
-
-
-
-#Checking if any parameters have been supplied
-#if not, show the menu
-if [ -n "$1" ]
-then
-
-	#we expect the script to be called with the environment
-	#echo 'we do some execution:'
-	#$MODULEDIR/local/deploy.sh $1
-	
-
-	# Reset all variables that might be set
-	verbose=0
-	
-	MODE_SSH=0
-	MODE_PUSH=0
-	MODE_SUDO=0
-	ENV=
-	
-	
-	
-	# handling command line arguments, see http://mywiki.wooledge.org/BashFAQ/035
-	while :; do
-	
-		#echo $1;
-	
-		#Environments
-		i=1
-		
-		envtest=$1
-		
-		#Environments
-		i=1
-		for element in "${ENV_ARRAY[@]}"
-		do
-			if [ $element == $1 ]
-			then
-				ENV=$element;
-				#CMD="$SCRIPT_COMMAND $element";
-				#echo "executing $CMD...";
-				#$CMD;
-			fi
-			
-			let i++;
-		done
-	
-	
-	
-		case $1 in
-		
-			ssh)
-				MODE_SSH=1
-				;;
-			sudo)
-				MODE_SUDO=1
-				;;
-			push)
-				MODE_PUSH=1
-				;;
-		
-			-h|-\?|--help)   # Call a "show_help" function to display a synopsis, then exit.
-				show_help
-				exit
-				;;
-			-v|--verbose)
-				verbose=$((verbose + 1)) # Each -v argument adds 1 to verbosity.
-				;;
-			--)              # End of all options.
-				shift
-				break
-				;;
-			-?*)
-				printf 'WARN: Unknown option (ignored): %s\n' "$1" >&2
-				;;
-			*) # Default case: If no more options then break out of the loop.
-				break
-		esac
-	
-		shift
-	done
-	
-	
-	
-	#echo $MODE_SSH;
-	#echo $MODE_SUDO;
-	#echo $MODE_PUSH;
-	
-	
-	if [ -z "$ENV" ]; then
-		echo "You need to set one of your environments."
-		exit;
-		
-	else 
-
-		#If "push" is added, the first thing to do is to push the repo
-		if [ $MODE_PUSH -eq 1 ]
-		then
-			#It's the branch that we're currently on that will be pushed
-			#TODO
-			echo "":
-		fi
-		
-		
-		
-		
-		# Based on the different modes we'll perform different actions
-		if [ $MODE_SSH -eq 1 ]
-		then
-			#SSH mode: can't be combined with other modes
-			echo "this is the ssh mode"
-		elif [ $MODE_SUDO -eq 1 ]
-		then
-			start_message "Deploying $ENV (sudo mode - you will be prompted for a password)";
-			$MODULEDIR/local/deploy.sh $ENV sudo;
-		else
-			start_message "Deploying $ENV";
-			$MODULEDIR/local/deploy.sh $ENV;
-			
-		fi
-	fi
-
-
-	
-else
-		
+mainmenu_input() {
 	clear
 	show_menu
 	while [ opt != '' ]
@@ -242,7 +116,7 @@ else
 	
 				if (( $i == $opt ))
 				then
-					CMD="$SCRIPT_COMMAND $element";
+					CMD="$SCRIPT_COMMAND menu $element";
 					echo "executing $CMD...";
 					$CMD;
 				fi
@@ -255,6 +129,172 @@ else
 		esac
 	fi
 	done
+
+}
+start_message() {
+	echo "${MENU}***********************************************${NORMAL}"
+	echo $1
+	#echo "Direct command: $SCRIPT_COMMAND $ALL_ARGS"
+	#echo "${MENU}***********************************************${NORMAL}"
+
+}
+
+
+
+#If the script is called with menu, show the menu
+if [ $1 == 'menu' ]
+then
+	mainmenu_input;
+fi
+
+
+
+
+
+#Checking if any parameters have been supplied
+#if not, show the menu
+if [ -n "$1" ]
+then
+
+	#we expect the script to be called with the environment
+	#echo 'we do some execution:'
+	#$MODULEDIR/local/deploy.sh $1
+	
+
+	# Reset all variables that might be set
+	verbose=0
+	
+	MODE_SSH=0
+	MODE_PUSH=0
+	MODE_SUDO=0
+	MODE_MENU=0
+	ENV=
+	
+	
+	
+	# handling command line arguments, see http://mywiki.wooledge.org/BashFAQ/035
+	while :; do
+	
+		#echo $1;
+	
+		#Environments
+		i=1
+		
+		envtest=$1
+		
+		#Environments
+		i=1
+		for element in "${ENV_ARRAY[@]}"
+		do
+			if [ $element == $1 ]
+			then
+				ENV=$element;
+				#CMD="$SCRIPT_COMMAND $element";
+				#echo "executing $CMD...";
+				#$CMD;
+			fi
+			
+			let i++;
+		done
+	
+	
+		case $1 in
+		
+			ssh)
+				MODE_SSH=1
+				;;
+			sudo)
+				MODE_SUDO=1
+				;;
+			push)
+				MODE_PUSH=1
+				;;
+			menu)
+				MODE_MENU=1
+				;;
+		
+			-h|-\?|--help)   # Call a "show_help" function to display a synopsis, then exit.
+				show_help
+				exit
+				;;
+			-v|--verbose)
+				verbose=$((verbose + 1)) # Each -v argument adds 1 to verbosity.
+				;;
+			--)              # End of all options.
+				shift
+				break
+				;;
+			-?*)
+				printf 'WARN: Unknown option (ignored): %s\n' "$1" >&2
+				;;
+			*) # Default case: If no more options then break out of the loop.
+				break
+		esac
+	
+		shift
+	done
+	
+	
+	
+	#echo ssh: $MODE_SSH;
+	#echo sudo: $MODE_SUDO;
+	#echo push: $MODE_PUSH;
+	#echo menu: $MODE_MENU;
+	#
+	#exit;
+	
+	
+	if [ -z "$ENV" ]; then
+		echo "You need to set one of your environments."
+		exit;
+		
+	else 
+
+		#Environment menu
+		#Showing options for the environment
+		if [ $MODE_MENU -eq 1 ]
+		then
+			echo "Menu for $ENV":
+			exit;
+		fi
+
+
+		#If "push" is added, the first thing to do is to push the repo
+		if [ $MODE_PUSH -eq 1 ]
+		then
+			#It's the branch that we're currently on that will be pushed
+			#TODO
+			echo "":
+		fi
+		
+		
+		# Based on the different modes we'll perform different actions
+		if [ $MODE_SSH -eq 1 ]
+		then
+			#SSH mode: can't be combined with other modes
+			echo "this is the ssh mode"
+		elif [ $MODE_SUDO -eq 1 ]
+		then
+			start_message "Deploying $ENV (sudo mode - you will be prompted for a password)";
+			$MODULEDIR/local/deploy.sh $ENV sudo;
+		else
+			start_message "Deploying $ENV";
+			$MODULEDIR/local/deploy.sh $ENV;
+			
+		fi
+	fi
+
+
+	
+else
+	
+	if [ ${#ENV_ARRAY[@]} -eq 1 ]
+	then
+		echo 'there is only one'
+	else
+		mainmenu_input;
+	fi
+	
 fi
 
 
