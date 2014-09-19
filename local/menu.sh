@@ -142,7 +142,8 @@ start_message() {
 
 
 #If the script is called with menu, show the menu
-if [ $1 == 'menu' ]
+
+if [ $1 ] && [ $1 == 'menu' ]
 then
 	mainmenu_input;
 fi
