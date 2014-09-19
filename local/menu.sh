@@ -141,9 +141,9 @@ start_message() {
 
 
 
-#If the script is called with menu, show the menu
+#If the script is called only with menu, show the menu
 
-if [ $1 ] && [ $1 == 'menu' ]
+if [ $1 ] && [ $1 == 'menu' ] && [ -z $2 ]
 then
 	mainmenu_input;
 fi
@@ -291,7 +291,10 @@ else
 	
 	if [ ${#ENV_ARRAY[@]} -eq 1 ]
 	then
-		echo 'there is only one'
+		#When there's only 1 active environment, there's no need to show the main menu
+		CMD="$SCRIPT_COMMAND menu ${ENV_ARRAY[0]}";
+		echo "executing $CMD...";
+		$CMD;
 	else
 		mainmenu_input;
 	fi
