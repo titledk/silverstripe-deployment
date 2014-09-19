@@ -27,104 +27,6 @@ SCRIPT_COMMAND="./d";
 
 
 
-# Reset all variables that might be set
-file=
-verbose=0
-
-
-# handling command line arguments, see http://mywiki.wooledge.org/BashFAQ/035
-while :; do
-
-	#echo $1;
-
-	#Environments
-	i=1
-	
-	envtest=$1
-	
-	#Environments
-	i=1
-	for element in "${ENV_ARRAY[@]}"
-	do
-		if [ $element == $1 ]
-		then
-			CMD="$SCRIPT_COMMAND $element";
-			echo "executing $CMD...";
-			#$CMD;
-		fi
-		
-		let i++;
-	done
-
-
-
-	case $1 in
-	
-		ssh)
-			echo 'ssh mode'
-			;;
-		sudo)
-			echo 'sudo mode'
-			;;
-		push)
-			echo 'push mode'
-			;;
-	
-		-h|-\?|--help)   # Call a "show_help" function to display a synopsis, then exit.
-			show_help
-			exit
-			;;
-		-f|--file)       # Takes an option argument, ensuring it has been specified.
-			if [ "$2" ]; then
-				file=$2
-				shift 2
-				continue
-			else
-				echo 'ERROR: Must specify a non-empty "--file FILE" argument.' >&2
-				exit 1
-			fi
-			;;
-		--file=?*)
-			file=${1#*=} # Delete everything up to "=" and assign the remainder.
-			;;
-		--file=)         # Handle the case of an empty --file=
-			echo 'ERROR: Must specify a non-empty "--file FILE" argument.' >&2
-			exit 1
-			;;
-		-v|--verbose)
-			verbose=$((verbose + 1)) # Each -v argument adds 1 to verbosity.
-			;;
-		--)              # End of all options.
-			shift
-			break
-			;;
-		-?*)
-			printf 'WARN: Unknown option (ignored): %s\n' "$1" >&2
-			;;
-		*)               # Default case: If no more options then break out of the loop.
-			break
-	esac
-
-	shift
-done
-
-exit;
-
-
-
-
-
-function help {
-echo 'test';
-
-}
-
-
-
-
-
-
-
 
 
 #colors
@@ -184,31 +86,118 @@ function option_picked() {
 
 
 
-
+#Checking if any parameters have been supplied
+#if not, show the menu
 if [ -n "$1" ]
 then
 
 	#we expect the script to be called with the environment
-    echo 'we do some execution:'
+    #echo 'we do some execution:'
     #$MODULEDIR/local/deploy.sh $1
     
 
-	while getopts ss:sudo:push: opt; do
-	  case $opt in
-	  ss)
-	  	echo 'doing the ssh'
-		  ;;
-	  l)
-		  ;;
-	  t)
-		  ;;
-	  esac
+	# Reset all variables that might be set
+	verbose=0
+	
+	MODE_SSH=0
+	MODE_PUSH=0
+	MODE_SUDO=0
+	
+	
+	
+	# handling command line arguments, see http://mywiki.wooledge.org/BashFAQ/035
+	while :; do
+	
+		#echo $1;
+	
+		#Environments
+		i=1
+		
+		envtest=$1
+		
+		#Environments
+		i=1
+		for element in "${ENV_ARRAY[@]}"
+		do
+			if [ $element == $1 ]
+			then
+				CMD="$SCRIPT_COMMAND $element";
+				echo "executing $CMD...";
+				#$CMD;
+			fi
+			
+			let i++;
+		done
+	
+	
+	
+		case $1 in
+		
+			ssh)
+				echo 'ssh mode'
+				MODE_SSH=1
+				;;
+			sudo)
+				echo 'sudo mode'
+				MODE_SUDO=1
+				;;
+			push)
+				echo 'push mode'
+				MODE_PUSH=1
+				;;
+		
+			-h|-\?|--help)   # Call a "show_help" function to display a synopsis, then exit.
+				show_help
+				exit
+				;;
+			-v|--verbose)
+				verbose=$((verbose + 1)) # Each -v argument adds 1 to verbosity.
+				;;
+			--)              # End of all options.
+				shift
+				break
+				;;
+			-?*)
+				printf 'WARN: Unknown option (ignored): %s\n' "$1" >&2
+				;;
+			*) # Default case: If no more options then break out of the loop.
+				break
+		esac
+	
+		shift
 	done
 	
-	shift $((OPTIND - 1))
 	
 	
-	echo 'we are done'
+	#echo $MODE_SSH;
+	#echo $MODE_SUDO;
+	#echo $MODE_PUSH;
+	
+	
+	
+	
+	#If "push" is added, the first thing to do is to push the repo
+	if [ $MODE_PUSH -eq 1 ]
+	then
+		#It's the branch that we're currently on that will be pushed
+		#TODO
+		echo "":
+	fi
+	
+	
+	
+	
+	# Based on the different modes we'll perform different actions
+	if [ $MODE_SSH -eq 1 ]
+	then
+		#SSH mode: can't be combined with other modes
+		echo "this is the ssh mode"
+	elif [ $MODE_SUDO -eq 1 ]
+	then
+		echo "this is the SUDO mode (yet to be implemented"
+	else
+		echo "just deploying"
+	fi
     
 else
     	
