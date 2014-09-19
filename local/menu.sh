@@ -138,17 +138,19 @@ show_envmenu(){
 	
 	echo "for ${NORMAL}$Projectname ($1) ${NORMAL}"
 	echo ''
-	echo "${ENTER_LINE}Please choose action.${NORMAL}"
+	echo "${ENTER_LINE}Press ENTER to deploy, or enter an option and press ENTER, ." 
 	echo "${MENU}***********************************************${NORMAL}"
 	
 	
-	echo "${MENU}${NUMBER} d)${MENU} Deploy${NORMAL}"
+	echo "${MENU}${NUMBER} ENTER)${MENU} Deploy${NORMAL}"
+	echo "${MENU}${NUMBER} push)${MENU} Push & Deploy${NORMAL}"
 	echo "${MENU}${NUMBER} sudo)${MENU} Sudo Deploy (clears cache, rebuilds database, updates Composer...)${NORMAL}"
+	echo "${MENU}${NUMBER} sudo push)${MENU} Push & Sudo Deploy${NORMAL}"
 
 
 	echo "${MENU}***********************************************${NORMAL}"
-	echo "${ENTER_LINE}Please enter a menu option and enter or ${RED_TEXT}enter to exit. ${NORMAL}"
-	echo "${RED_TEXT}NOTE: ${ENTER_LINE}This should only be run from your local environment. ${NORMAL}"
+	echo "${RED_TEXT}Press x and ENTER to exit. ${NORMAL}"
+	echo "${RED_TEXT}NOTE: ${ENTER_LINE}This should be run from your LOCAL environment. ${NORMAL}"
 	read opt
 }
 
@@ -157,8 +159,13 @@ envmenu_input() {
 	show_envmenu $1
 	while [ opt != '' ]
 		do
-		if [[ $opt = "" ]]; then 
-				exit;
+		if [[ $opt = "" ]]; then
+		 
+		 	#deploy by default
+			CMD="$SCRIPT_COMMAND $1";
+			echo "executing $CMD...";
+			$CMD;
+			exit;
 		else
 			case $opt in
 			x)exit;
@@ -167,8 +174,15 @@ envmenu_input() {
 			\n)exit;
 			;;
 			
-			d)
+			ENTER)
 			CMD="$SCRIPT_COMMAND $1";
+			echo "executing $CMD...";
+			$CMD;
+			exit;
+			;;
+			
+			push)
+			CMD="$SCRIPT_COMMAND push $1";
 			echo "executing $CMD...";
 			$CMD;
 			exit;
@@ -176,6 +190,13 @@ envmenu_input() {
 			
 			sudo)
 			CMD="$SCRIPT_COMMAND sudo $1";
+			echo "executing $CMD...";
+			$CMD;
+			exit;
+			;;
+			
+			"sudo push")
+			CMD="$SCRIPT_COMMAND sudo push $1";
 			echo "executing $CMD...";
 			$CMD;
 			exit;
