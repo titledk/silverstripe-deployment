@@ -145,8 +145,10 @@ show_envmenu(){
 	
 	#echo "${MENU}${NUMBER} ENTER)${MENU} Deploy${NORMAL}"
 	echo "${MENU}${NUMBER} push)${MENU} Push & Deploy${NORMAL}"
-	echo "${MENU}${NUMBER} sudo)${MENU} Sudo Deploy (clears cache, rebuilds database, updates Composer...)${NORMAL}"
+	#echo "${MENU}${NUMBER} sudo)${MENU} Sudo Deploy (clears cache, rebuilds database, updates Composer...)${NORMAL}"
+	echo "${MENU}${NUMBER} sudo)${MENU} Sudo Deploy${NORMAL}"
 	echo "${MENU}${NUMBER} sudo push)${MENU} Push & Sudo Deploy${NORMAL}"
+	echo "${MENU}${NUMBER} ssh)${MENU} SSH to $1 environment${NORMAL}"
 	
 	echo "";
 	
@@ -210,6 +212,13 @@ envmenu_input() {
 			exit;
 			;;
 			
+			"ssh")
+			CMD="$SCRIPT_COMMAND ssh $1";
+			execute_note "$CMD";
+			$CMD;
+			exit;
+			;;
+			
 			
 			"shortcuts")
 			echo ""
@@ -243,13 +252,19 @@ envmenu_input() {
 
 
 start_message() {
-	echo "${MENU}***********************************************${NORMAL}"
+	#echo "${MENU}***********************************************${NORMAL}"
 	echo $1
 	#echo "Direct command: $SCRIPT_COMMAND $ALL_ARGS"
-	#echo "${MENU}***********************************************${NORMAL}"
-
+	echo "${MENU}***********************************************${NORMAL}"
+	echo "";
 }
 
+end_message() {
+	echo "";
+	echo "${MENU}***********************************************${NORMAL}"
+	echo $1 
+	echo "${MENU}***********************************************${NORMAL}"
+}
 
 execute_note() {
 	echo "${MENU}***********************************************${NORMAL}"
@@ -393,15 +408,18 @@ then
 		# Based on the different modes we'll perform different actions
 		if [ $MODE_SSH -eq 1 ]
 		then
-			#SSH mode: can't be combined with other modes
-			echo "this is the ssh mode"
+			start_message "Connecting via SSH to $ENV (disconnect by typing \"exit\")";
+			$MODULEDIR/local/ssh.sh $ENV;
+			end_message "Welcome back to your local machine!";
 		elif [ $MODE_SUDO -eq 1 ]
 		then
 			start_message "Deploying $ENV (sudo mode - you will be prompted for a password)";
 			$MODULEDIR/local/deploy.sh $ENV sudo;
+			end_message "Sudo deployment has finished executing";
 		else
 			start_message "Deploying $ENV";
 			$MODULEDIR/local/deploy.sh $ENV;
+			end_message "Deployment has finished executing";
 			
 		fi
 	fi

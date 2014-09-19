@@ -46,5 +46,8 @@ echo "Starting deployment to $ENV_HOST ($ENV)...";
 echo "--------------------------------------------------------";
 echo "Updating git repo, and syncing sub modules:";
 
-ssh $ENV_CUSTOM_SSHCONNECTIONSTR -t "$GITCOMMANDS chmod u+x $SCRIPT;$SCRIPT $ENV; $2"
+SERVER_COMMANDS="$GITCOMMANDS chmod u+x $SCRIPT;$SCRIPT $ENV $2;"
+#echo $SERVER_COMMANDS;
+#exit
+ssh $ENV_CUSTOM_SSHCONNECTIONSTR -t $SERVER_COMMANDS 
 
