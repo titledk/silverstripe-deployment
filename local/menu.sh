@@ -1,6 +1,8 @@
 #!/bin/sh
 
 
+ALL_ARGS="$@";
+
 
 MODULEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )";
 #echo $MODULEDIR;
@@ -71,14 +73,14 @@ show_menu(){
 	echo "${RED_TEXT}NOTE: ${ENTER_LINE}This should only be run from your local environment. ${NORMAL}"
 	read opt
 }
-function option_picked() {
-	COLOR='\033[01;31m' # bold red
-	RESET='\033[00;00m' # normal white
-	#MESSAGE=${@:-"${RESET}Error: No message passed"}
-	echo "${COLOR}${MESSAGE}${RESET}"
+
+start_message() {
+	echo "${MENU}***********************************************${NORMAL}"
+	echo $1
+	#echo "Direct command: $SCRIPT_COMMAND $ALL_ARGS"
+	#echo "${MENU}***********************************************${NORMAL}"
+
 }
-
-
 
 
 
@@ -92,9 +94,9 @@ if [ -n "$1" ]
 then
 
 	#we expect the script to be called with the environment
-    #echo 'we do some execution:'
-    #$MODULEDIR/local/deploy.sh $1
-    
+	#echo 'we do some execution:'
+	#$MODULEDIR/local/deploy.sh $1
+	
 
 	# Reset all variables that might be set
 	verbose=0
@@ -102,6 +104,7 @@ then
 	MODE_SSH=0
 	MODE_PUSH=0
 	MODE_SUDO=0
+	ENV=
 	
 	
 	
@@ -121,8 +124,9 @@ then
 		do
 			if [ $element == $1 ]
 			then
-				CMD="$SCRIPT_COMMAND $element";
-				echo "executing $CMD...";
+				ENV=$element;
+				#CMD="$SCRIPT_COMMAND $element";
+				#echo "executing $CMD...";
 				#$CMD;
 			fi
 			
@@ -134,15 +138,12 @@ then
 		case $1 in
 		
 			ssh)
-				echo 'ssh mode'
 				MODE_SSH=1
 				;;
 			sudo)
-				echo 'sudo mode'
 				MODE_SUDO=1
 				;;
 			push)
-				echo 'push mode'
 				MODE_PUSH=1
 				;;
 		
@@ -174,33 +175,43 @@ then
 	#echo $MODE_PUSH;
 	
 	
-	
-	
-	#If "push" is added, the first thing to do is to push the repo
-	if [ $MODE_PUSH -eq 1 ]
-	then
-		#It's the branch that we're currently on that will be pushed
-		#TODO
-		echo "":
+	if [ -z "$ENV" ]; then
+		echo "You need to set one of your environments."
+		exit;
+		
+	else 
+
+		#If "push" is added, the first thing to do is to push the repo
+		if [ $MODE_PUSH -eq 1 ]
+		then
+			#It's the branch that we're currently on that will be pushed
+			#TODO
+			echo "":
+		fi
+		
+		
+		
+		
+		# Based on the different modes we'll perform different actions
+		if [ $MODE_SSH -eq 1 ]
+		then
+			#SSH mode: can't be combined with other modes
+			echo "this is the ssh mode"
+		elif [ $MODE_SUDO -eq 1 ]
+		then
+			start_message "Deploying $ENV (sudo mode - you will be prompted for a password)";
+			$MODULEDIR/local/deploy.sh $ENV sudo;
+		else
+			start_message "Deploying $ENV";
+			$MODULEDIR/local/deploy.sh $ENV;
+			
+		fi
 	fi
+
+
 	
-	
-	
-	
-	# Based on the different modes we'll perform different actions
-	if [ $MODE_SSH -eq 1 ]
-	then
-		#SSH mode: can't be combined with other modes
-		echo "this is the ssh mode"
-	elif [ $MODE_SUDO -eq 1 ]
-	then
-		echo "this is the SUDO mode (yet to be implemented"
-	else
-		echo "just deploying"
-	fi
-    
 else
-    	
+		
 	clear
 	show_menu
 	while [ opt != '' ]
@@ -238,10 +249,8 @@ else
 				
 				let i++;
 			done
-	
-			
-			option_picked "Pick an option from the menu";
-			show_menu;
+
+			exit;
 			;;
 		esac
 	fi
