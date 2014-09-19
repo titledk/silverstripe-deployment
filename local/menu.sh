@@ -348,8 +348,8 @@ then
 		if [ $MODE_PUSH -eq 1 ]
 		then
 			#It's the branch that we're currently on that will be pushed
-			#TODO
-			echo "":
+			echo "pushing git repository...";
+			$MODULEDIR/local/git-push.sh
 		fi
 		
 		
