@@ -117,7 +117,7 @@ mainmenu_input() {
 				if (( $i == $opt ))
 				then
 					CMD="$SCRIPT_COMMAND menu $element";
-					echo "executing $CMD...";
+					execute_note "executing $CMD...";
 					$CMD;
 				fi
 				
@@ -163,7 +163,7 @@ envmenu_input() {
 		 
 		 	#deploy by default
 			CMD="$SCRIPT_COMMAND $1";
-			echo "executing $CMD...";
+			execute_note "$CMD";
 			$CMD;
 			exit;
 		else
@@ -176,28 +176,28 @@ envmenu_input() {
 			
 			ENTER)
 			CMD="$SCRIPT_COMMAND $1";
-			echo "executing $CMD...";
+			execute_note "$CMD";
 			$CMD;
 			exit;
 			;;
 			
 			push)
 			CMD="$SCRIPT_COMMAND push $1";
-			echo "executing $CMD...";
+			execute_note "$CMD";
 			$CMD;
 			exit;
 			;;
 			
 			sudo)
 			CMD="$SCRIPT_COMMAND sudo $1";
-			echo "executing $CMD...";
+			execute_note "$CMD";
 			$CMD;
 			exit;
 			;;
 			
 			"sudo push")
 			CMD="$SCRIPT_COMMAND sudo push $1";
-			echo "executing $CMD...";
+			execute_note "$CMD";
 			$CMD;
 			exit;
 			;;
@@ -222,6 +222,16 @@ start_message() {
 	#echo "${MENU}***********************************************${NORMAL}"
 
 }
+
+
+execute_note() {
+	echo "${MENU}***********************************************${NORMAL}"
+	echo "${MENU}Executing ${NORMAL}$1 ${MENU}...${NORMAL}"
+	#echo "Direct command: $SCRIPT_COMMAND $ALL_ARGS"
+	echo "${MENU}***********************************************${NORMAL}"
+
+}
+
 
 
 
