@@ -55,7 +55,7 @@ logo() {
 }
 
 
-show_menu(){
+show_mainmenu(){
 	
 	logo;
 	
@@ -70,7 +70,7 @@ show_menu(){
 
 	for element in "${ENV_ARRAY[@]}"
 	do
-		echo "${MENU}${NUMBER} $i)${MENU} $element ($SCRIPT_COMMAND $element)${NORMAL}"
+		echo "${MENU}${NUMBER} $i)${MENU} $element ($SCRIPT_COMMAND menu $element)${NORMAL}"
 		
 		let i++;
 	done
@@ -87,7 +87,7 @@ show_menu(){
 
 mainmenu_input() {
 	clear
-	show_menu
+	show_mainmenu
 	while [ opt != '' ]
 		do
 		if [[ $opt = "" ]]; then 
@@ -131,6 +131,69 @@ mainmenu_input() {
 	done
 
 }
+
+show_envmenu(){
+	
+	logo;
+	
+	echo "for ${NORMAL}$Projectname ($1) ${NORMAL}"
+	echo ''
+	echo "${ENTER_LINE}Please choose action.${NORMAL}"
+	echo "${MENU}***********************************************${NORMAL}"
+	
+	
+	echo "${MENU}${NUMBER} d)${MENU} Deploy${NORMAL}"
+	echo "${MENU}${NUMBER} sudo)${MENU} Sudo Deploy (clears cache, rebuilds database, updates Composer...)${NORMAL}"
+
+
+	echo "${MENU}***********************************************${NORMAL}"
+	echo "${ENTER_LINE}Please enter a menu option and enter or ${RED_TEXT}enter to exit. ${NORMAL}"
+	echo "${RED_TEXT}NOTE: ${ENTER_LINE}This should only be run from your local environment. ${NORMAL}"
+	read opt
+}
+
+envmenu_input() {
+	clear
+	show_envmenu $1
+	while [ opt != '' ]
+		do
+		if [[ $opt = "" ]]; then 
+				exit;
+		else
+			case $opt in
+			x)exit;
+			;;
+	
+			\n)exit;
+			;;
+			
+			d)
+			CMD="$SCRIPT_COMMAND $1";
+			echo "executing $CMD...";
+			$CMD;
+			exit;
+			;;
+			
+			sudo)
+			CMD="$SCRIPT_COMMAND sudo $1";
+			echo "executing $CMD...";
+			$CMD;
+			exit;
+			;;
+			
+	
+			*)clear;
+
+			exit;
+			;;
+		esac
+	fi
+	done
+
+}
+
+
+
 start_message() {
 	echo "${MENU}***********************************************${NORMAL}"
 	echo $1
@@ -255,7 +318,7 @@ then
 		#Showing options for the environment
 		if [ $MODE_MENU -eq 1 ]
 		then
-			echo "Menu for $ENV":
+			envmenu_input $ENV;
 			exit;
 		fi
 
@@ -293,7 +356,7 @@ else
 	then
 		#When there's only 1 active environment, there's no need to show the main menu
 		CMD="$SCRIPT_COMMAND menu ${ENV_ARRAY[0]}";
-		echo "executing $CMD...";
+		#echo "executing $CMD...";
 		$CMD;
 	else
 		mainmenu_input;
