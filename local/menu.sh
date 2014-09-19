@@ -1,5 +1,7 @@
 #!/bin/sh
 
+
+
 MODULEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )";
 #echo $MODULEDIR;
 
@@ -22,6 +24,92 @@ IFS=', ' read -a ENV_ARRAY <<< "$AvailableEnvironments"
 
 #Script command
 SCRIPT_COMMAND="./d";
+
+
+
+# Reset all variables that might be set
+file=
+verbose=0
+
+
+# handling command line arguments, see http://mywiki.wooledge.org/BashFAQ/035
+while :; do
+
+	#echo $1;
+
+	#Environments
+	i=1
+	
+	envtest=$1
+	
+	#Environments
+	i=1
+	for element in "${ENV_ARRAY[@]}"
+	do
+		if [ $element == $1 ]
+		then
+			CMD="$SCRIPT_COMMAND $element";
+			echo "executing $CMD...";
+			#$CMD;
+		fi
+		
+		let i++;
+	done
+
+
+
+	case $1 in
+	
+		ssh)
+			echo 'ssh mode'
+			;;
+		sudo)
+			echo 'sudo mode'
+			;;
+		push)
+			echo 'push mode'
+			;;
+	
+		-h|-\?|--help)   # Call a "show_help" function to display a synopsis, then exit.
+			show_help
+			exit
+			;;
+		-f|--file)       # Takes an option argument, ensuring it has been specified.
+			if [ "$2" ]; then
+				file=$2
+				shift 2
+				continue
+			else
+				echo 'ERROR: Must specify a non-empty "--file FILE" argument.' >&2
+				exit 1
+			fi
+			;;
+		--file=?*)
+			file=${1#*=} # Delete everything up to "=" and assign the remainder.
+			;;
+		--file=)         # Handle the case of an empty --file=
+			echo 'ERROR: Must specify a non-empty "--file FILE" argument.' >&2
+			exit 1
+			;;
+		-v|--verbose)
+			verbose=$((verbose + 1)) # Each -v argument adds 1 to verbosity.
+			;;
+		--)              # End of all options.
+			shift
+			break
+			;;
+		-?*)
+			printf 'WARN: Unknown option (ignored): %s\n' "$1" >&2
+			;;
+		*)               # Default case: If no more options then break out of the loop.
+			break
+	esac
+
+	shift
+done
+
+exit;
+
 
 
 
@@ -102,7 +190,26 @@ then
 
 	#we expect the script to be called with the environment
     echo 'we do some execution:'
-    $MODULEDIR/local/deploy.sh $1
+    #$MODULEDIR/local/deploy.sh $1
+    
+
+	while getopts ss:sudo:push: opt; do
+	  case $opt in
+	  ss)
+	  	echo 'doing the ssh'
+		  ;;
+	  l)
+		  ;;
+	  t)
+		  ;;
+	  esac
+	done
+	
+	shift $((OPTIND - 1))
+	
+	
+	echo 'we are done'
+    
 else
     	
 	clear
