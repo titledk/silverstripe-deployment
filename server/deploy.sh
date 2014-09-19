@@ -11,6 +11,16 @@ MODULEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )";
 
 ENV=$1
 
+#at the moment options are only for sudo mode, but can be extended in the future
+OPTIONS=$2
+
+#defining sudo mode
+SUDO_MODE=0
+
+if [[ $OPTIONS == 'sudo' ]]; then
+	SUDO_MODE=1;
+fi
+
 
 #Getting environment specific vars
 VARS="$MODULEDIR/lib/shell/vars-for-env.sh $ENV"
@@ -23,7 +33,7 @@ eval `$VARS`
 
 
 echo '--------------------------------------------------------'
-echo "Now running deploymet on $ENV($ENV_HOST)"
+echo "Now running deployment on $ENV($ENV_HOST)"
 echo ''
 echo 'Directory:'
 echo $ENV_REPODIR
@@ -56,21 +66,26 @@ COMPOSERSTR="composer";
 #fi
 
 
+if [[ $SUDO_MODE -eq 1 ]]; then
+	echo "Sudo mode: updating Composer";
+	sudo $COMPOSERSTR self-update;
+fi
 
-#if [ "$COMPOSER" = "1" ]
-#then
-#	if [ "$DEPLOY_NOSUDO" == "" ]; then
-#		echo "Updating Composer";
-#		sudo $COMPOSERSTR self-update;
-#	fi
-#	echo "Checking for/Installing Composer depencencies";
-	cd public; $COMPOSERSTR install;
-	cd ..;	
-#fi
+echo "Installing Composer depencencies";
+cd public; $COMPOSERSTR install;
+cd ..;	
 
-echo "Rebuilding database"
-php public/framework/cli-script.php /dev/build flush=1
 
+if [[ $SUDO_MODE -eq 1 ]]; then
+	echo "Sudo mode: Rebuilding database"
+	php public/framework/cli-script.php /dev/build flush=1
+	
+	echo "Sudo mode: Clearing/resetting \"silverstripe-cache\" directory"
+	sudo rm -rf public/silverstripe-cache
+	mkdir public/silverstripe-cache
+	chmod 777 public/silverstripe-cache
+	
+fi
 
 #Change owner
 #
@@ -86,6 +101,6 @@ php public/framework/cli-script.php /dev/build flush=1
 #making this script executeable again
 chmod u+x $SCRIPTNAME
 echo ''
-echo 'Deployment script has run.'
+echo 'Deployment on $ENV($ENV_HOST)" has run.'
 echo '--------------------------------------------------------'
 
