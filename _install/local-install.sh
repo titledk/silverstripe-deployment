@@ -69,8 +69,13 @@ AvailableEnvironments: \"Live, Test, Dev\"
 
 #creating the "deploy" script, and setting permissions
 
+#It'll create a file with the following contents:
+##!/bin/sh
+#./deployment/local/menu.sh "$@"
+
+
 echo "#!/bin/sh
-./deployment/local/menu.sh \"$@\"" > d;
+./deployment/local/menu.sh \"\$@\"" > d;
 chmod u+x d;
 
 echo "";
