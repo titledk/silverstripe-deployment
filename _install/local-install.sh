@@ -45,7 +45,10 @@ read REPODIR
 
 #creation of config, based on input
 
+
 echo "Environments:
+Projectname: \"My project\"
+AvailableEnvironments: \"Live, Test, Dev\"
   Live:
     #required
     Host: \"$HOST\"
