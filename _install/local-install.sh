@@ -68,10 +68,10 @@ echo "Environments:
 
 echo "#!/bin/sh
 ./deployment/local/menu.sh \"$@\"" > d;
-chmod u+x deploy;
+chmod u+x d;
 
 echo "";
-echo "Installation is done. You can now deploy by running \"./deploy\"";
+echo "Installation is done. You can now deploy by running \"./d\"";
 echo "Remember to commit the changed to your repo."
 echo ""
 
