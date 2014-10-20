@@ -64,7 +64,7 @@ if [ "$ENV_COMPOSERPATH" != "" ]; then
   COMPOSERSTR="$ENV_COMPOSERPATH"
 fi
 
-echo "composer string: $COMPOSERSTR";
+#echo "composer string: $COMPOSERSTR";
 
 #TODO: This is where composer will be configurable
 #if [ "$DEPLOY_COMPOSERPHAR" == "1" ]; then
