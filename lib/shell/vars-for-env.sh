@@ -28,7 +28,7 @@ host=$PRE"_Host"
 sshuser=$PRE"_Sshuser"
 repodir=$PRE"_Repodir"
 sshport=$PRE"_Sshport"
-
+composerpath=$PRE"_Composerpath"
 
 #These are the variables that are exported:
 
@@ -36,6 +36,7 @@ echo "ENV_HOST=${!host}"
 echo "ENV_SSHUSER=${!sshuser}"
 echo "ENV_REPODIR=${!repodir}"
 echo "ENV_SSHPORT=${!sshport}"
+echo "ENV_COMPOSERPATH=${!composerpath}"
 
 
 # Based on these, the folling variables are defined

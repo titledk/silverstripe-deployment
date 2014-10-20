@@ -57,7 +57,7 @@ AvailableEnvironments: \"Live, Test, Dev\"
 
     #additional settings
     Sshport: \"\"
-    Composerdir: \"\" #not yet implemented
+    Composerpath: \"\"
 
   Test:
     #here goes data for a test server
