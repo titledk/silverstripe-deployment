@@ -1,4 +1,9 @@
-# SilverStripe Deployment
+**NOTE**:    
+Development of this has ceased. We're instead using and working on [Terminal Tools](https://github.com/titledk/ttools-core) and the [Git Helpers](https://github.com/titledk/ttools-githelpers) and [SilverStripe sitesync](https://github.com/titledk/ttools-sitesync-silverstripe) plugins.   
+You can achieve the same and more with these new tools, and reuse much of the deployment configuration.
+
+
+# SilverStripe Deployment (DEPRECATED: see above)
 
 A script-based deployment solution by Title Web Solutions.
 
